@@ -1,7 +1,7 @@
 // create Comment class here
 class Comment extends Image {
   constructor(id, comment, imageId) {
-      super(comments);
+      super();
 
       this.comment = comment;
       this.imageId = imageId;
@@ -9,7 +9,7 @@ class Comment extends Image {
   }
 
   allComments() {
-    return this.comment.all//get all the comments
+    return this.comment.all//get all the comments for each instance
   }
 
   Comment.prototype.commentEl = function() {

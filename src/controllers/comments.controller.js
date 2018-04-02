@@ -1,5 +1,6 @@
-class CommentsController {
+class CommentsController extends Comment {
   constructor() {
+    super();
     this.$addCommentForm = $('.add-comment')
   }
 
@@ -8,14 +9,14 @@ class CommentsController {
 
   CommentsController.prototype.render = $(function(){
     $.getJSON(this.href).success(function(json){ //on success, append comment
-       var $ul = $("div.comments ul"); //set ul var to the comments ul div
+       var $ul = $(`ul.${this.imageId}`); //set ul var to the comments ul div
        $ul.html(""); //get the html contents of the variable
        json.forEach(function(comment){ //for each json, perform function
-         $ul.append("<li>" + comment.description + "</li>"); // appends comment desc in li tags
-  };
+         $ul.append(comment.commentEl); // appends comment desc in li tags
+       });
+    });
+  });
 
-  // selects the appropriate `ul` for this comment to be added to
-  // appends the new comment element to this `ul`
 
   CommentController.prototype.addCommentFormListener = function(){
     let elements = document.getElementsByTagName(':submit')
@@ -28,12 +29,10 @@ class CommentsController {
           data: $(e.target.form).serialize(),
           dataType: "JSON"
         }).success(function(response){
-          console.log(response)
+           let comment = new Comment(response.comment, response.imageId);
+            $ul.append(comment.render());
         })
       })
     }
   }
-  // iterates through each comment form and adds an eventlistener to trigger a function on form submit
-  // function should grab the imageId + comment and create a new Comment with those arguments
-  // execute the render function on that found image object to append the new comment
 }
