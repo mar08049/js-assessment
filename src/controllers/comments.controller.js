@@ -22,9 +22,10 @@ class CommentsController extends Comment {
         $.ajax({          //ajax post request
           type: "POST",
           url: "index.html",
-          data: $(e.target.form).serialize(), //unsure about data at this point
+          data: dataForm, //unsure about data at this point
           dataType: "JSON"
         }).success(function(response) { //on success,create new comment with a name and imageId
+           let comment = new Comment(response.commentContent, response.imageId);
            let $ul = $(`ul.comments-${this.imageId}`);
            $ul.append(response.render());
       });

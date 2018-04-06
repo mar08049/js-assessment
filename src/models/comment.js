@@ -13,11 +13,7 @@ class Comment extends Image {  //inheretence?
   Comment.prototype.commentEl = function() {
     let html = ''  //set html to empty string
     html += `<li id="comment_el">${this.commentContent}</li>`//add comment content to li tag
-    return '<div class=comments'
-              `<ul id=comment_list_${this.imageId}> `
-                  html
-               '</ul>' //return html inside ul tag with the image id as the id
-            '</div>'
+    return html //return html inside ul tag with the image id as the id
   }
 
   Comment.prototype.findImage = function(id){
