@@ -1,3 +1,5 @@
+
+
 class CommentsController extends Comment {
   constructor() {
     super();
@@ -10,7 +12,7 @@ class CommentsController extends Comment {
   CommentsController.prototype.render = $(function(){
     $.getJSON(this.href).success(function(json){ //on success, append comment
        var $ul = $(`ul.${this.imageId}`); //set ul var to the comments ul div
-       $ul.html(""); //get the html contents of the variable
+       $ul.html(""); //get the html contents of UL
        json.forEach(function(comment){ //for each json, perform function
          $ul.append(comment.commentEl); // appends comment desc in li tags
        });
@@ -19,18 +21,16 @@ class CommentsController extends Comment {
 
 
   CommentController.prototype.addCommentFormListener = function(){
-    let elements = document.getElementsByTagName(':submit')
-    for (let i = 0 < elements.length; i++) {
-      $(':submit').on('click', function(e){
-        e.preventDefault();
-        $.ajax({
+      $('.add-comment').on('click', function(e){// on add-comment, run function
+        e.preventDefault(); //prevent default action
+        $.ajax({          //ajax post request
           type: "POST",
-          url: e.target.form.action,
-          data: $(e.target.form).serialize(),
+          url: "index.html",
+          data: $(e.target.form).serialize(), //unsure about data at this point
           dataType: "JSON"
-        }).success(function(response){
-           let comment = new Comment(response.comment, response.imageId);
-            $ul.append(comment.render());
+        }).success(function(response) { //on success,create new comment with a name and imageId
+           let comment = new Comment(response.commentContent, response.imageId);
+            $ul.append(comment); //append new comment to page using render() function
         })
       })
     }
