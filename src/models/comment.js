@@ -4,10 +4,9 @@ class Comment extends Image {  //inheretence?
       super();
       this.commentContent = commentContent;
       this.imageId = imageId;
-    }
   }
 
-  allComments() {
+  function allComments(){
     return Comment.all//get all the comments in array
   }
 
@@ -21,7 +20,7 @@ class Comment extends Image {  //inheretence?
             '</div>'
   }
 
-  Comment.prototype.findImage = function(id){     // id as arg
+  Comment.prototype.findImage = function(id){
     let image = Image.find(image => image.id === this.imageId) //set image equal to the found Image with params
     return image //return that image
   }
