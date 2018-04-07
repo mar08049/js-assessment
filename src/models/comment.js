@@ -1,17 +1,17 @@
 // create Comment class here
-function Comment(comment, imageId) {
+function Comment(commentContent, imageId) {
   this.id = imageId;
-  this.commentContent = comment;
+  this.commentContent = commentContent;
   Comment.all.push(this.commentContent);
 }
 
- Comment.prototype.findImage = function() {
- 	Image.all[this.id].comments.push(this.commentContent);
- 	return Image.all[this.id];
- }
+Comment.all = [];
 
- Comment.prototype.commentEl = function() {
- 	return `<li id="${Image.all[this.id].comments.length}">${this.commentContent}</li>`;
- }
+Comment.prototype.findImage = function() {
+	Image.all[this.id].comments.push(this.commentContent);
+	return Image.all[this.id];
+}
 
-  Comment.all = [];
+Comment.prototype.commentEl = function() {
+	return `<li id="${Image.all[this.id].comments.length}">${this.commentContent}</li>`;
+}

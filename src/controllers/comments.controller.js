@@ -1,36 +1,26 @@
-function CommentsController() {
+class CommentsController {
+  constructor() {
     this.$addCommentForm = $('.add-comment')
   }
 
-CommentsController.prototype.render = function(){
-     let $ul = $(`ul.comments-${this.imageId}`); //set ul var to the comments ul
-     $ul.each(function(comment){ //for each ul, perform function
-       $ul.append(comment.commentEl()); // appends comment in li tags using commentEl prototype
-     });
-  };
+    init() {
+    this.addCommentFormListener();
+  }
 
-CommentsController.prototype.addCommentFormListener = function(){
-    $(':submit').on('click', function(e){ // on add-comment, run function
-      e.preventDefault(); //prevent default action
-      $.ajax({          //ajax post request
-        type: "POST",
-        url: e.target.form.action,
-        data: $(e.target.form).serialize(), //unsure about data at this point
-        dataType: "JSON"
-      }).success(function(response) { //on success,create new comment with a name and imageId
-        debugger;
-         let comment = new Comment(response.commentContent, response.imageId);
-         let $ul = $(`ul.comments-${this.imageId}`);
-         $ul.append(response.render(comment));
-    });
-  });
-};
+  addCommentFormListener() {
+      let self = this;
+      this.$addCommentForm.on('click', 'input[type="submit"]', function(e){
+        let imageId = parseInt($(this).parents('ul').data('id'));
+        let commentDesc = $(this).prev('input[type="text"]').val();
+        $(this).prev('input[type="text"]').val(""); //clear form
+        let newComment = new Comment(commentDesc, imageId); //create new comment
+        e.preventDefault();
+        self.render(newComment);
+        newComment.findImage();
+      });
+    }
+}
 
- CommentsController.prototype.init = function() {
-   this.addCommentFormListener();
-   this.render();
-
- };
-
-
-window.CommentsController = CommentsController;
+ CommentsController.prototype.render = function(commentObj) {
+    $(`ul[id="comments-${commentObj.id}"]`).append(commentObj.commentEl());
+  }
