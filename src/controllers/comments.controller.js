@@ -8,13 +8,13 @@ class CommentsController {
   }
 
   addCommentFormListener() {
-      let self = this;
-      this.$addCommentForm.on('click', 'input[type="submit"]', function(e){
+      let self = this; //maintain original reference to this
+      this.$addCommentForm.on('click', 'input[type="submit"]', function(e){ 
         let imageId = parseInt($(this).parents('ul').data('id'));
         let commentDesc = $(this).prev('input[type="text"]').val();
         $(this).prev('input[type="text"]').val(""); //clear form
         let newComment = new Comment(commentDesc, imageId); //create new comment
-        e.preventDefault();
+        e.preventDefault(); // prevent default action(page refresh)
         self.render(newComment);
         newComment.findImage();
       });
