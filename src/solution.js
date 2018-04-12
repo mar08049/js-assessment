@@ -1,61 +1,46 @@
 // create Comment class here
-class Comment extends Image {  //inheretence?
-  constructor(id, commentContent, imageId) { //comment constructor
-      super();
-      this.commentContent = commentContent;
-      this.imageId = imageId;
-  }
-
-  function allComments(){
-    return Comment.all//get all the comments in array
-  }
-
-  Comment.prototype.commentEl = function() {
-    let html = ''  //set html to empty string
-    html += `<li id="comment_el">${this.commentContent}</li>`//add comment content to li tag
-    return html //return html as li
-  }
-
-  Comment.prototype.findImage = function(id){
-    let image = Image.find(image => image.id === this.imageId) //set image equal to the found Image with params
-    return image //return that image
-  }
+function Comment(commentContent, imageId) {
+  this.id = imageId;
+  this.commentContent = commentContent;
 }
 
-class CommentsController extends Comment {
+Comment.all = []; //get all comments
+
+Comment.prototype.findImage = function() {
+	Image.all[this.id].comments.push(this.commentContent); //push THIS comment into comments array in THIS Image
+	return Image.all[this.id]; //return comment id
+}
+
+Comment.prototype.commentEl = function() {
+	return `<li id="${Image.all[this.id].comments.length}">${this.commentContent}</li>` //give comment an li tag with id of last image...add comment
+}
+//id is element by id inside the image.comments array
+//
+
+class CommentsController {
   constructor() {
-    super();
     this.$addCommentForm = $('.add-comment')
   }
 
-  init() {
+    init() {
+    this.addCommentFormListener();
   }
 
-  CommentsController.prototype.render = function(){
-       let $ul = $(`ul.comments-${this.imageId}`); //set ul var to the comments ul
-       $ul.forEach(function(comment){ //for each ul, perform function
-         $ul.append(comment.commentEl()); // appends comment in li tags using commentEl prototype
-       });
-    });
-  });
+  addCommentFormListener() {
+      let self = this; //maintain original reference to this
 
-
-  CommentsController.prototype.addCommentFormListener = function(){
-      $addCommentForm.on('click', function(e){// on add-comment, run function
-        e.preventDefault(); //prevent default action
-        $.ajax({          //ajax post request
-          type: "POST",
-          url: "index.html",
-          data: formData, //unsure about data at this point
-          dataType: "JSON"
-        }).success(function(response) { //on success,create new comment with a name and imageId
-           let comment = new Comment(response.commentContent, response.imageId);
-           let $ul = $(`ul.comments-${this.imageId}`);
-           $ul.append(response.render());
+      this.$addCommentForm.on('click', 'input[type="submit"]', function(e){ //on submit
+        let imageId = parseInt($(this).parents('ul').data('id')); //set imageId to id in searched parents matching UL
+        let commentDesc = $(this).prev('input[type="text"]').val(); //set var to previous element to text. get value
+        $(this).prev('input[type="text"]').val(""); //clear form, sets val to empty
+        let newComment = new Comment(commentDesc, imageId); //create new comment
+        e.preventDefault(); // prevent default action(page refresh)
+        self.render(newComment); //renders comment
+        newComment.findImage(); //pushes comment into comments array for image
       });
     }
-  }
 }
 
-//I was unable to get the feature working the way it should but I have built out these methods and functions
-//the best I know how.
+ CommentsController.prototype.render = function(commentObj) {
+    $(`ul[id="comments-${commentObj.id}"]`).append(commentObj.commentEl()); //on the id, append the comment li
+  }
